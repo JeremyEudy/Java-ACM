@@ -1,0 +1,5 @@
+Generalized ACM for any project.
+What needs to be stored?
+    Subjects, Objects, and Rights
+    Structure to store rights and rules
+    
