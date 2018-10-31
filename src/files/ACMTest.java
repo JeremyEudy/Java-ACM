@@ -15,10 +15,13 @@ package ACM;
 
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.io.*;
 
 public class ACMTest{
     public static void main(String[] args){
         Scanner in = new Scanner(System.in);
+		FileInputStream fIn = null;									//Use File IO to store user account info
+		FileOutputStream fOut = null;
         System.out.printf("###################################\n");
         System.out.printf("#                                 #\n");
         System.out.printf("# Java Access Control Matrix Tool #\n");
@@ -27,8 +30,18 @@ public class ACMTest{
 
         ACM newACM = new ACM();
         boolean persist = true;
+		/*
+        while(true){
+			System.out.printf("Please input your username:\n>");
+			String userName = in.nextLine();
+			System.out.printf("Please input your password:\n>");
+			char[] passString = Console.readPassword();
+			String password = new String(passString);
+			//If valid info, then approve
+		}
+		*/
         while(persist){
-            System.out.printf("\nPlease select an option.\n1-View ACM\n2-Add a new subject\n3-Add a new object\n4-Delete a subject\n5-Delete an object\n6-Add a role\n7-Remove a role\n0-Quit\n>");
+            System.out.printf("\nPlease select an option.\n1-View ACM\n2-Add a new subject\n3-Delete a subject\n4-Autenticate user\n5-Manipulate database\n0-Quit\n>");
             int choice = in.nextInt();
             int ID = 0;
             String name = "";
@@ -59,56 +72,21 @@ public class ACMTest{
                     roleName = in.nextLine();
                     roleName = roleName.toUpperCase();
                     role = roleList.indexOf(roleName);
+				    if(role == -1){
+						role = roleList.indexOf("USER");
+				    }
                     newACM.addSubject(name, ID, objType, role);
                     break;
                 case 3:
-                    System.out.printf("\nWhat is the name of the object? ");
-                    name = in.nextLine();
-                    name = name.toUpperCase();
-                    ID = newACM.getObjectsNum()+1;
-                    objType = 0;
-                    newACM.addObject(name, ID, objType);
-                    break;
-                case 4:
                     System.out.printf("\nWhat is the ID of the subject? ");
                     ID = in.nextInt();
                     newACM.removeSubject(ID);
                     break;
+				case 4:
+				    break;
                 case 5:
-                    System.out.printf("\nWhat is the ID of the object? ");
-                    ID = in.nextInt();
-                    newACM.removeObject(ID);
-                    break;
-                case 6:
-                    System.out.printf("\nWhat is the name of the role? ");
-                    roleName = in.nextLine();
-                    roleName = roleName.toUpperCase();
-                    roleList = newACM.getRoles();
-                    for(int i = 0; i < roleList.size(); i++){
-                        System.out.println("("+i+")"+": "+roleList.get(i));
-                    }
-                    System.out.printf("\nWhere would you like this role to fit in the hierarchy? (Note: roles will be shifted down)\n>");
-                    int destination = in.nextInt();
-                    newACM.addRole(roleName, destination);
-                    break;
-                case 7:
-                    roleList = newACM.getRoles();
-                    for(int i = 0; i < roleList.size(); i++){
-                        System.out.println("("+i+")"+": "+roleList.get(i));
-                    }
-                    System.out.printf("\nWhich role would you like to remove?\n>");
-                    if(roleID == 0 || roleID == 1){
-                        System.out.printf("\nThis role is protected, you are not able to remove it.");
-                    }
-                    else{
-                        int roleID = in.nextInt();
-                        role = roleList.get(roleID);
-                        roleList.remove(role);
-                        newACM.updateRoles(roleList);
-                        newACM.purgeRole(roleID);
-                    }
-                    break;
-                default:
+					break;
+	            default:
                     System.out.printf("\nInvalid choice.");
                     break;
             }
