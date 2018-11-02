@@ -40,8 +40,38 @@ public class ACMTest{
 			//If valid info, then approve
 		}
 		*/
+
+		int userRole = 0;
+
+		while(persist){
+			System.out.printf("\nWhich role do you belong to?\n0 - User\n1 - Security Officer\n2 - Administrator\n>");
+			userRole = in.nextInt();
+			switch(userRole){
+				case 0:
+					System.out.printf("\nRole set to 'User'");
+					newACM.setUserRole(userRole);
+					persist = false;
+					break;
+				case 1:
+					System.out.printf("\nRole set to 'Security Officer'");
+					newACM.setUserRole(userRole);
+					persist = false;
+					break;
+				case 2:
+					System.out.printf("\nRole set to 'Administrator'");
+					newACM.setUserRole(userRole);
+					persist = false;
+					break;
+				default:
+					System.out.printf("\nInvalid choice.");
+					break;
+			}
+		}
+
+		persist = true;
+
         while(persist){
-            System.out.printf("\nPlease select an option.\n1-View ACM\n2-Add a new subject\n3-Delete a subject\n4-Autenticate user\n5-Manipulate database\n0-Quit\n>");
+            System.out.printf("\nPlease select an option.\n1 - View ACM\n2 - Add a new subject\n3 - Delete a subject\n4 - Autenticate user\n5 - Manipulate database\n0 - Quit\n>");
             int choice = in.nextInt();
             int ID = 0;
             String name = "";
@@ -54,9 +84,11 @@ public class ACMTest{
                     persist = false;
                     System.out.printf("\nGoodbye!\n");
                     break;
+
                 case 1:
                     newACM.printACM();
                     break;
+
                 case 2:
                     roleList = newACM.getRoles();
                     System.out.printf("\nWhat is the name of the subject? ");
@@ -77,15 +109,73 @@ public class ACMTest{
 				    }
                     newACM.addSubject(name, ID, objType, role);
                     break;
+
                 case 3:
                     System.out.printf("\nWhat is the ID of the subject? ");
                     ID = in.nextInt();
                     newACM.removeSubject(ID);
                     break;
+
 				case 4:
-				    break;
+					if(userRole>0 & newACM.getSubjects().size()>0){
+						ArrayList subjects = newACM.getSubjects();
+
+						for(int i=0;i<subjects.size();i++){
+							ACMObject one = subjects.get(i);
+							System.out.printf("%d - %s", i, one.getName());
+						}
+
+						System.out.printf("\nWhich subject would you like to authenticate?");
+						int subjectChoice = in.nextInt();
+						ACMObject subject = subjects.get(subjectChoice);
+						
+						System.out.printf("\nWhich object would you like them to have access to?");
+						int objectChoice = in.nextInt();
+						ACMObject object = objects.get(objectChoice);
+						System.out.printf("\nWhat privileges should they have?\n0 - Execute\n1 - Control\n2 - Owner\n>");
+						int controlChoice = in.nextInt();
+						object.authenticate(subject, controlChoice);
+						System.out.printf("\nAuthentication complete.");
+					}
+
+					else if(userRole>0 & newACM.getSubjects().size()<=0){
+						System.out.printf("There are no subjects!");
+						break;
+					}
+
+					else{
+						System.out.printf("Invalid clearance.");
+						break;
+					}
+
                 case 5:
+					boolean dbPersist = true;
+					while(dbPersist){
+						System.out.printf("\n>");
+						String command = in.nextLine();
+						command = command.toLowerCase();
+						if(command.contains("grant") | command.contains("revoke") | command.contains("commit") | command.contains("rollback")){
+							if(userRole>0){
+								System.out.printf("\nSuccess.");
+							}
+							else{
+								System.out.printf("\nAuthentication failure.");
+							}
+						}
+						else if(command.contains("create") | command.contains("drop")){
+							if(userRole>1){
+								System.out.printf("\nSuccess.");
+							}
+							else{
+								System.out.printf("\nAuthentication failure.");
+							}
+						}
+						else{
+							System.out.printf("\nSuccess.");
+						}
+					}
 					break;
+
 	            default:
                     System.out.printf("\nInvalid choice.");
                     break;

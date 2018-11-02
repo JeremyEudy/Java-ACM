@@ -19,13 +19,14 @@ public class ACM{
     private int subjectsNum;
     private int objectsNum;
     private int rolesNum;
+	private int userRole;
     private ArrayList<ACMObject> subjects = new ArrayList<ACMObject>();
     private ArrayList<ACMObject> objects = new ArrayList<ACMObject>();
     private ArrayList<String> roles = new ArrayList<String>();
 
     public ACM(){
         roles.add("USER");
-	roles.add("SECURITY");
+		roles.add("SECURITY");
         roles.add("ADMIN");
     }
 
@@ -34,8 +35,16 @@ public class ACM{
     }
 
     public ArrayList getRoles(){
-        return roles;
+        return this.roles;
     }
+
+	public void setUserRole(int roleInt){
+		userRole = roleInt;
+	}
+
+	public int getUserRole(){
+		return this.userRole;
+	}
 
     public void addSubject(String name, int ID, int objType, int role){
         ACMObject newSubject = new ACMObject(name, ID, objType);
@@ -48,19 +57,27 @@ public class ACM{
         subjects.remove(ID);
     }
 
+	public ArrayList getSubjects(){
+		return this.subjects;
+	}
+
     public int getSubjectsNum(){
         return this.subjectsNum;
     }
+
+	public ArrayList getObjects(){
+		return this.objects;
+	}
 
     public int getObjectsNum(){
         return this.objectsNum;
     }
 
     public void printACM(){
-        System.out.printf("\n%10s %8s %9s %14s %8s %8s", "", "ADMIN", "SECURITY", "USER", "DML", "DCL");
-		System.out.printf("\n%8s %52s", "", "+-----------------------------------------------------");
-		System.out.printf("\n%10s %8s %9s %14s %8s %8s", "ADMIN |", "Control", "Owner", "Owner/Control", "Control", "Control");
-		System.out.printf("\n%10s %8s %9s %14s %8s %8s", "SECURITY |", "", "Control", "Control", "", "Execute");
-		System.out.printf("\n%10s %8s %9s %14s %8s %8s", "USER |", "", "", "", "Execute", "\n");
+        System.out.printf("\n%10s %8s %9s %14s %8s %8s %8s", "", "ADMIN", "SECURITY", "USER", "DML", "DCL", "TCL");
+		System.out.printf("\n%8s %52s", "", "+------------------------------------------------------------------");
+		System.out.printf("\n%10s %8s %9s %14s %8s %8s %8s", "ADMIN |", "Control", "Owner", "Owner/Control", "Control", "Control", "Control");
+		System.out.printf("\n%10s %8s %9s %14s %8s %8s %8s", "SECURITY |", "", "Control", "Control", "", "Execute", "Execute");
+		System.out.printf("\n%10s %8s %9s %14s %8s %8s %8s", "USER |", "", "", "", "Execute", "", "\n");
     }
 }
