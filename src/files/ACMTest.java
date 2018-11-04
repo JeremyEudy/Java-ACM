@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 package ACM;
 
-//This doesn't print right now since my method of autogenerating var names doesn't work.
-
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.*;
