@@ -15,6 +15,13 @@ clear
 cd src/
 rm -r classes/
 mkdir -p classes/
+
 javac -d classes/ files/ACM.java files/ACMObject.java && javac -cp classes/ -d classes/ files/ACMTest.java
-echo "Rebuild complete"
-echo "use './run' to launch"
+
+if [ ! -f /tmp/foo.txt ]; then
+	echo "Build failed";
+
+else
+	echo "Build complete"
+	echo "use './run' to launch"
+fi
