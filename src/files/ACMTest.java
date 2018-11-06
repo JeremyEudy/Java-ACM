@@ -18,8 +18,6 @@ import java.io.*;
 public class ACMTest{
     public static void main(String[] args){
         Scanner in = new Scanner(System.in);
-		FileInputStream fIn = null;									//Use File IO to store user account info
-		FileOutputStream fOut = null;
         System.out.printf("###################################\n");
         System.out.printf("#                                 #\n");
         System.out.printf("# Java Access Control Matrix Tool #\n");
@@ -28,6 +26,7 @@ public class ACMTest{
 
         ACM newACM = new ACM();
         boolean persist = true;
+
 		/*
         while(true){
 			System.out.printf("Please input your username:\n>");
@@ -36,6 +35,16 @@ public class ACMTest{
 			char[] passString = Console.readPassword();
 			String password = new String(passString);
 			//If valid info, then approve
+		}
+		*/
+		/*
+		File f = new File("SaveACM.txt");
+		if(f.exists() && !f.isDirectory()){
+			System.out.printf("\nSave file found.\nWould you like to load from it?\n1 - yes\n2 - no\n>");
+			int choice = in.nextInt();
+			if(choice == 1){
+				
+			}
 		}
 		*/
 
