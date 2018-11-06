@@ -17,16 +17,14 @@ public class ACMObject{
 
     private String name;
     private int ID;
-    private int objType;    //var to check whether this object is a subject or not
     private int role;
-	private ArrayList<ACMObject> owners;
-	private ArrayList<ACMObject> controllers;
-	private ArrayList<ACMObject> executors;
+	private ArrayList<String> owners = new ArrayList<String>();
+	private ArrayList<String> controllers = new ArrayList<String>();
+	private ArrayList<String> executors = new ArrayList<String>();
 
-    public ACMObject(String name, int ID, int objType){
+    public ACMObject(String name, int ID){
         this.name = name;
         this.ID = ID;
-        this.objType = objType;
     }
 
     public void setRole(int role){
@@ -45,18 +43,26 @@ public class ACMObject{
         return ID;
     }
 
-    public int getObjType(){
-        return objType;
-    }
+	public ArrayList<String> getOwners(){
+		return owners;
+	}
 
-	public void authenticate(ACMObject subject, int controlChoice){
+	public ArrayList<String> getControllers(){
+		return controllers;
+	}
+
+	public ArrayList<String> getExecutors(){
+		return executors;
+	}
+
+	public void authenticate(String subject, int controlChoice){
 		if(controlChoice == 0){
 			executors.add(subject);
 		}
-		if(controlChoice == 1){
+		else if(controlChoice == 1){
 			controllers.add(subject);
 		}
-		if(controlChoice == 2){
+		else if(controlChoice == 2){
 			owners.add(subject);
 		}
 	}

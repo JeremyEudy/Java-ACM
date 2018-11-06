@@ -16,12 +16,14 @@ cd src/
 rm -r classes/
 mkdir -p classes/
 
-javac -d classes/ files/ACM.java files/ACMObject.java && javac -cp classes/ -d classes/ files/ACMTest.java
+{
 
-if [ ! -f /tmp/foo.txt ]; then
-	echo "Build failed";
+	javac -d classes/ files/ACM.java files/ACMObject.java && javac -cp classes/ -d classes/ files/ACMTest.java &&
+		echo "Build complete" && echo "Use './run' to launch";
+	
 
-else
-	echo "Build complete"
-	echo "use './run' to launch"
-fi
+} || {
+
+	echo "Build failed.";
+
+}
