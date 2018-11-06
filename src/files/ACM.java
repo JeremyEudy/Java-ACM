@@ -57,8 +57,10 @@ public class ACM{
         System.out.printf("\nSubject %s added", newSubject.getName());
     }
 
-    public void removeSubject(int ID){
+    public ACMObject removeSubject(int ID){
+		ACMObject backup = subjects.get(ID-1);
         subjects.remove(ID);
+		return backup;
     }
 
 	public ArrayList<ACMObject> getSubjects(){

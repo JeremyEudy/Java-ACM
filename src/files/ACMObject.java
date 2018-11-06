@@ -55,6 +55,21 @@ public class ACMObject{
 		return executors;
 	}
 
+	public void removeOwner(String name){
+		int index = owners.indexOf(name);
+		owners.remove(index);
+	}
+
+	public void removeController(String name){
+		int index = controllers.indexOf(name);
+		controllers.remove(index);
+	}
+
+	public void removeExecutor(String name){
+		int index = executors.indexOf(name);
+		controllers.remove(index);
+	}
+
 	public void authenticate(String subject, int controlChoice){
 		if(controlChoice == 0){
 			executors.add(subject);

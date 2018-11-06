@@ -97,37 +97,56 @@ public class ACMTest{
                     break;
 
                 case 2:
-					in = new Scanner(System.in);
-                    roleList = newACM.getRoles();
-                    System.out.printf("\nWhat is the name of the subject?\n>");
-                    name = in.nextLine();
-                    name = name.toUpperCase();
-                    ID = newACM.getSubjectsNum()+1;
-                    System.out.printf("\nWhat role does this subject have?\n");
-                    for(int i=0;i<roleList.size();i++){
-                        System.out.printf("%d - %s\n", i, roleList.get(i));
-                    }
-                    System.out.printf("\n> ");
-                    int roleInput = in.nextInt();
-					try{
-	                    String roleName = roleList.get(roleInput);
-						role = roleList.indexOf(roleName);
+					if(userRole>0){
+						in = new Scanner(System.in);
+    	                roleList = newACM.getRoles();
+        	            System.out.printf("\nWhat is the name of the subject?\n>");
+            	        name = in.nextLine();
+                	    name = name.toUpperCase();
+                    	ID = newACM.getSubjectsNum()+1;
+	                    System.out.printf("\nWhat role does this subject have?\n");
+    	                for(int i=0;i<roleList.size();i++){
+        	                System.out.printf("%d - %s\n", i, roleList.get(i));
+            	        }
+                	    System.out.printf("\n> ");
+                    	int roleInput = in.nextInt();
+						try{
+		                    String roleName = roleList.get(roleInput);
+							role = roleList.indexOf(roleName);
+						}
+					    catch(Exception e){
+							role = roleList.indexOf("USER");
+					    }
+    	                newACM.addSubject(name, ID, role);
+        	            break;
 					}
-				    catch(Exception e){
-						role = roleList.indexOf("USER");
-				    }
-                    newACM.addSubject(name, ID, role);
-                    break;
+					else{
+						System.out.printf("\nAccess denied.");
+						break;
+					}
 
                 case 3:
 					subjects = newACM.getSubjects();
-                    System.out.printf("\nWhat is the ID of the subject?\n");
+					objects = newACM.getObjects();
+                    System.out.printf("\nDelete which subject?\n");
 					for(int i=0;i<subjects.size();i++){
 						ACMObject one = subjects.get(i);
-						System.out.printf("%d - %s\n", one.getID(), one.getName());
+						System.out.printf("%d - %s\n", i, one.getName());
 					}
+					System.out.printf(">");
                     ID = in.nextInt();
-                    newACM.removeSubject(ID);
+                    String subjectName = newACM.removeSubject(ID).getName();
+					for(int i=0;i<objects.size();i++){
+						if(objects.get(i).getOwners().contains(subjectName)){
+							objects.get(i).removeOwner(subjectName);
+						}
+						else if(objects.get(i).getControllers().contains(subjectName)){
+							objects.get(i).removeController(subjectName);
+						}
+						else if(objects.get(i).getExecutors().contains(subjectName)){
+							objects.get(i).removeExecutor(subjectName);
+						}
+					}
                     break;
 
 				case 4:
