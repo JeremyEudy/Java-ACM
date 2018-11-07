@@ -16,11 +16,12 @@ import java.util.ArrayList;
 public class ACMObject{
 
     private String name;
-    private int ID;
-    private int role;
-	private ArrayList<String> owners = new ArrayList<String>();
-	private ArrayList<String> controllers = new ArrayList<String>();
-	private ArrayList<String> executors = new ArrayList<String>();
+    private int ID;			//In order to keep track of subjects
+    private int role;		//Subjects and objects are the same class, however subjects are the only one to use this
+	private int index;
+	private ArrayList<Integer> owners = new ArrayList<Integer>();
+	private ArrayList<Integer> controllers = new ArrayList<Integer>();
+	private ArrayList<Integer> executors = new ArrayList<Integer>();
 
     public ACMObject(String name, int ID){
         this.name = name;
@@ -43,42 +44,67 @@ public class ACMObject{
         return ID;
     }
 
-	public ArrayList<String> getOwners(){
+	public ArrayList<Integer> getOwners(){
 		return owners;
 	}
 
-	public ArrayList<String> getControllers(){
+	public ArrayList<Integer> getControllers(){
 		return controllers;
 	}
 
-	public ArrayList<String> getExecutors(){
+	public ArrayList<Integer> getExecutors(){
 		return executors;
 	}
 
-	public void removeOwner(String name){
-		int index = owners.indexOf(name);
-		owners.remove(index);
+
+	public void updateOwners(ArrayList<Integer> owners){
+		this.owners = owners;
 	}
 
-	public void removeController(String name){
-		int index = controllers.indexOf(name);
-		controllers.remove(index);
+	public void updateControllers(ArrayList<Integer> controllers){
+		this.controllers = controllers;
 	}
 
-	public void removeExecutor(String name){
-		int index = executors.indexOf(name);
-		controllers.remove(index);
+	public void updateExecutors(ArrayList<Integer> executors){
+		this.executors = executors;
 	}
 
-	public void authenticate(String subject, int controlChoice){
+	public void removeOwner(int ID){
+		for(int i=0;i<this.owners.size();i++){
+			if(this.owners.get(i) == ID){
+				index = i;
+			}
+		}
+		this.owners.remove(index);
+	}
+
+	public void removeController(int ID){
+		for(int i=0;i<this.controllers.size();i++){
+			if(this.controllers.get(i) == ID){
+				index = i;
+			}
+		}
+		this.controllers.remove(index);
+	}
+
+	public void removeExecutor(int ID){
+		for(int i=0;i<this.executors.size();i++){
+			if(this.executors.get(i) == ID){
+				index = i;
+			}
+		}
+		this.executors.remove(index);
+	}
+
+	public void authenticate(int ID, int controlChoice){
 		if(controlChoice == 0){
-			executors.add(subject);
+			executors.add(ID);
 		}
 		else if(controlChoice == 1){
-			controllers.add(subject);
+			controllers.add(ID);
 		}
 		else if(controlChoice == 2){
-			owners.add(subject);
+			owners.add(ID);
 		}
 	}
 

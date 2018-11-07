@@ -20,22 +20,21 @@ public class ACM{
     private int objectsNum;
     private int rolesNum;
 	private int userRole;
+	private int index;
     private ArrayList<ACMObject> subjects = new ArrayList<ACMObject>();
     private ArrayList<ACMObject> objects = new ArrayList<ACMObject>();
     private ArrayList<String> roles = new ArrayList<String>();
 
     public ACM(){
+		//Populate roles list
         roles.add("USER");
 		roles.add("SECURITY");
         roles.add("ADMIN");
+		//Populate objects
 		ACMObject object1 = new ACMObject("DML", 1);
 		ACMObject object2 = new ACMObject("DCL", 2);
 		ACMObject object3 = new ACMObject("TCL", 3);
 		objects.add(object1); objects.add(object2); objects.add(object3);
-    }
-
-    public void addRole(String role, int destination){
-        roles.add(destination, role);
     }
 
     public ArrayList<String> getRoles(){
@@ -51,16 +50,20 @@ public class ACM{
 	}
 
     public void addSubject(String name, int ID, int role){
-        ACMObject newSubject = new ACMObject(name, ID);
+        ACMObject newSubject = new ACMObject(name, ID);			//Generate new ACMObject from params
         newSubject.setRole(role);
         subjects.add(newSubject);
-        System.out.printf("\nSubject %s added", newSubject.getName());
+        System.out.printf("\nSubject %s added\n", newSubject.getName());
     }
 
-    public ACMObject removeSubject(int ID){
-		ACMObject backup = subjects.get(ID-1);
-        subjects.remove(ID);
-		return backup;
+    public void removeSubject(int ID){
+		//Search subjects for goal
+		for(int i=0;i<subjects.size();i++){
+			if(subjects.get(i).getID() == ID){
+				index = i;
+			}
+		}
+        subjects.remove(index);									//Remove subject
     }
 
 	public ArrayList<ACMObject> getSubjects(){
@@ -79,7 +82,20 @@ public class ACM{
         return this.objectsNum;
     }
 
+	public void updateObjects(ArrayList<ACMObject> objects){
+		this.objects = objects;
+	}
+	
+	public void printUsers(){
+		//Prints dynamic user list
+		System.out.printf("\nUSERS:\n");
+		for(int i=0;i<subjects.size();i++){
+			System.out.printf("%d - %s | ID: %d | Role: %s\n", i+1, subjects.get(i).getName(), subjects.get(i).getID(), subjects.get(i).getRole());
+		}
+	}
+
     public void printACM(){
+		//Prints static ACM
         System.out.printf("\n%10s %8s %9s %14s %8s %8s %8s", "", "ADMIN", "SECURITY", "USER", "DML", "DCL", "TCL");
 		System.out.printf("\n%8s %52s", "", "+------------------------------------------------------------------");
 		System.out.printf("\n%10s %8s %9s %14s %8s %8s %8s", "ADMIN |", "Control", "Owner", "Owner/Control", "Control", "Control", "Control");
@@ -88,11 +104,16 @@ public class ACM{
     }
 
 	public void printUAuth(){
+		//Prints dynamic user authentication table
 		for(int i=0;i<objects.size();i++){
 			System.out.printf("\n%s", objects.get(i).getName());
 			System.out.printf("\n%11s | %s", "Owners", objects.get(i).getOwners());
 			System.out.printf("\n%11s | %s", "Controllers", objects.get(i).getControllers());
 			System.out.printf("\n%11s | %s\n", "Executors", objects.get(i).getExecutors());
+		}
+		System.out.printf("Users:\n");
+		for(int i=0;i<subjects.size();i++){
+			System.out.printf("%d - %s | ID: %d", i+1, subjects.get(i).getName(), subjects.get(i).getID());
 		}
 	}
 }
