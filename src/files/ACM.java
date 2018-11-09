@@ -93,13 +93,13 @@ public class ACM{
     }
 
     public void removeObject(String name){
-        int index;
+        int index = 0;
         for(int i=0;i<objects.size();i++){
-            if(objects.get(i).getName == name){
+            if(objects.get(i).getName() == name){
                 index = i;
             }
         }
-        objects.remove(index);
+	    objects.remove(index);
     }
 	
 	public void printUsers(){
@@ -129,7 +129,7 @@ public class ACM{
 		}
 		System.out.printf("Users:\n");
 		for(int i=0;i<subjects.size();i++){
-			System.out.printf("%d - %s | ID: %d", i+1, subjects.get(i).getName(), subjects.get(i).getID());
+			System.out.printf("%d - %s | ID: %d\n", i+1, subjects.get(i).getName(), subjects.get(i).getID());
 		}
 	}
 }
