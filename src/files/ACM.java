@@ -6,7 +6,7 @@
 /*   By: jeudy2552 <jeudy2552@floridapoly.edu>          |  \`-\   \ |  o      */
 /*                                                      |---\  \   `|  l      */
 /*   Created: 2018/09/26 14:23:11 by jeudy2552          | ` .\  \   |  y      */
-/*   Updated: 2018/10/19 12:46:51 by jeudy2552          -------------         */
+/*   Updated: 2018/11/09 11:29:11 by jeudy2552          -------------         */
 /*                                                                            */
 /* ************************************************************************** */
 package ACM;
@@ -85,6 +85,22 @@ public class ACM{
 	public void updateObjects(ArrayList<ACMObject> objects){
 		this.objects = objects;
 	}
+
+    public void addObject(String name){
+        int objectID = objects.size();
+        ACMObject newObject = new ACMObject(name, objectID);
+        this.objects.add(newObject);
+    }
+
+    public void removeObject(String name){
+        int index;
+        for(int i=0;i<objects.size();i++){
+            if(objects.get(i).getName == name){
+                index = i;
+            }
+        }
+        objects.remove(index);
+    }
 	
 	public void printUsers(){
 		//Prints dynamic user list
