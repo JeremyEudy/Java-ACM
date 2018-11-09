@@ -247,8 +247,48 @@ public class ACMTest{
 						System.out.printf("\n>");
 						in = new Scanner(System.in);
 						String command = in.nextLine();
-						command = command.toLowerCase();
-						if(command.contains("grant") | command.contains("revoke") | command.contains("commit") | command.contains("rollback")){
+						command = command.toUpperCase();
+						ArrayList<String> splitCommand = new ArrayList<String>();
+						if(command.contains("GRANT")){
+							if(userRole>1){				//Access restricted to Security Officers and Admins
+								System.out.printf("Success.");
+								splitCommand = command.split(" ");
+								String permission = splitCommand.get(1);
+								String objectName = splitCommand.get(3);
+								String subjectName = splitCommand.get(5);
+								ACMObject object;
+								ACMObject subject;
+								for(int i=0;i<objects.size();i++){
+									if(objects.get(i).getName() == objectName){
+										object = objects.get(i);
+									}
+								}
+								for(int i=0;i<subjects.size();i++){
+									if(subjects.get(i).getName() == subjecName){
+										subject = subjects.get(i);
+									}
+								}
+								if(object == null){
+									System.out.printf("Could not find object.");
+								}
+								if(subject == null){
+									System.out.printf("Could not find subject.");
+								}
+								if(permission == "EXECUTE"){
+									object.authenticate(subject.getID(), 0);
+								}
+								else if(permission == "CONTROL"){
+									object.authenticate(subject.getID(), 1);
+								}
+								else if(permission == "OWN"){
+									object.authenticate(subject.getID(), 2);
+								}
+							}
+							else{
+								System.out.printf("Authentication failure.");
+							}
+						}
+						else if(command.contains("REVOKE"){
 							if(userRole>1){				//Access restricted to Security Officers and Admins
 								System.out.printf("Success.");
 							}
@@ -256,20 +296,64 @@ public class ACMTest{
 								System.out.printf("Authentication failure.");
 							}
 						}
-						else if(command.contains("create") | command.contains("drop")){
-							if(userRole>2){				//Access restricted to Admins
+						else if(command.contains("COMMIT"){
+							if(userRole>1){				//Access restricted to Security Officers and Admins
 								System.out.printf("Success.");
 							}
 							else{
 								System.out.printf("Authentication failure.");
 							}
 						}
-						else if(command.contains("role")){
+						else if(command.contains("ROLLBACK"){
+							if(userRole>1){				//Access restricted to Security Officers and Admins
+								System.out.printf("Success.");
+							}
+							else{
+								System.out.printf("Authentication failure.");
+							}
+						}
+						else if(command.contains("CREATE")){
+							if(userRole>2){				//Access restricted to Admins
+								System.out.printf("Success.");
+								splitCommand = command.split(" ");
+								String tableName = splitCommand.get(splitCommand.size()-1);
+								newACM.addObject(tableName);
+							}
+							else{
+								System.out.printf("Authentication failure.");
+							}
+						}
+						else if(command.contains("DROP")){
+							if(userRole>2){
+								System.out.printf("Success.");
+								splitCommand = command.split(" ");
+								String tableName = splitCommand.get(splitCommand.size()-1);
+								newACM.removeObject(tableName);
+							}
+							else{
+								System.out.printf("Authentication failure.");
+							}
+						}
+						else if(command == "ROLE"){
 							System.out.print(userRole);
 						}
-						else if(command.contains("exit")){
+						else if(command == "EXIT"){
 							dbPersist = false;
 							break;
+						}
+						else if(command == "HELP"){
+							System.out.printf("Commands:\nGRANT permission_type ON object_name TO subject_name - Grant permissions\n"
+									"REVOKE permission_type ON object_name FROM subject_name - Revoke permissions\n"
+									"COMMIT - Update objects list and commit work\n"
+									"ROLLBACK - Undo last commit\n"
+									"CREATE table_name - Creates an object with the specified name\n"
+									"DROP table_name - Deletes an object with the specified name\n"
+									"SELECT data FROM table_name - Selects data from the specified table\n"
+									"INSERT INTO table_name VALUES value1, value2 - Inserts values into table\n"
+									"DELETE FROM table_name WHERE condition - Deletes data fitting condition\n"
+									"ROLE - prints the users current role\n"
+									"EXIT - exits the database interface\n"
+									);
 						}
 						else{
 							System.out.printf("Success.");

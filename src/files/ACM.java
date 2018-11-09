@@ -87,7 +87,7 @@ public class ACM{
 	}
 
     public void addObject(String name){
-        int objectID = objects.size();
+        int objectID = objects.get(objects.size()-1).getID()+1;
         ACMObject newObject = new ACMObject(name, objectID);
         this.objects.add(newObject);
     }
