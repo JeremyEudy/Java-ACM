@@ -25,7 +25,9 @@ public class ACMTest{
         System.out.printf("###################################\n");
 
         ACM newACM = new ACM();				//Initialize the ACM
-		ACM oldACM = new ACM();				//Make second ACM for rollback command
+		ACM workingACM = new ACM();
+		ArrayList<ACM> commitHistory = new ArrayList<ACM>();	//Make arraylist to keep track of commits
+		commitHistory.add(newACM);
         boolean persist = true;
 
 		/*Login system framework
@@ -242,6 +244,8 @@ public class ACMTest{
 					//The text is parsed based on role level to dissallow access to lower level users
 					subjects = newACM.getSubjects();
 					objects = newACM.getObjects();
+					workingACM = newACM;
+					commitHistory.add(newACM);
 					System.out.printf("\nDATABASE INPUT:\n");
 					boolean dbPersist = true;
 					while(dbPersist){
@@ -252,7 +256,6 @@ public class ACMTest{
 						String[] splitCommand;
 						if(command.contains("GRANT")){
 							if(userRole>1){				//Access restricted to Security Officers and Admins
-								System.out.printf("Success.");
 								splitCommand = command.split(" ");
 								String permission = splitCommand[1];
 								String objectName = splitCommand[3];
@@ -295,6 +298,7 @@ public class ACMTest{
 									System.out.printf("\nAuthentication failed.");
 								}
 								objects.set(object.getID()-1, object);
+								workingACM.updateObjects(objects);
 							}
 							else{
 								System.out.printf("Authentication failure.");
@@ -302,7 +306,39 @@ public class ACMTest{
 						}
 						else if(command.contains("REVOKE")){
 							if(userRole>1){				//Access restricted to Security Officers and Admins
-								System.out.printf("Success.");
+								splitCommand = command.split(" ");
+								String permission = splitCommand[1];
+								String objectName = splitCommand[3];
+								String subjectID = splitCommand[5];
+								ACMObject object = objects.get(0);
+								ACMObject subject = subjects.get(0);
+								for(int i=0;i<objects.size();i++){
+									if(objects.get(i).getName() == objectName){
+										object = objects.get(i);
+									}
+								}
+								for(int i=0;i<subjects.size();i++){
+									if(subjects.get(i).getID() == Integer.parseInt(subjectID)){
+										subject = subjects.get(i);
+									}
+								}
+								if(permission == "EXECUTE"){
+									object.removeExecutor(subject.getID());
+									System.out.printf("\nSubject permission removed");
+								}
+								else if(permission == "CONTROL"){
+									object.removeController(subject.getID());
+									System.out.printf("\nSubject permission removed");
+								}
+								else if(permission == "OWN"){
+									object.removeOwner(subject.getID());
+									System.out.printf("\nSubject permission removed");
+								}
+								else{
+									System.out.printf("\nRevoke failed.");
+								}
+								objects.set(object.getID()-1, object);
+								workingACM.updateObjects(objects);
 							}
 							else{
 								System.out.printf("Authentication failure.");
@@ -311,8 +347,8 @@ public class ACMTest{
 						else if(command.contains("COMMIT")){
 							if(userRole>1){				//Access restricted to Security Officers and Admins
 								System.out.printf("Success.");
-								oldACM = newACM;
-								newACM.updateObjects(objects);
+								commitHistory.add(workingACM);
+								newACM = workingACM;
 							}
 							else{
 								System.out.printf("Authentication failure.");
@@ -320,13 +356,12 @@ public class ACMTest{
 						}
 						else if(command.contains("ROLLBACK")){
 							if(userRole>1){				//Access restricted to Security Officers and Admins
-								System.out.printf("Success.");
-								if(oldACM.getUpdateCounter() > 0){
-									System.out.printf("\nGoing from updateCounter %d to %d", newACM.getUpdateCounter(), oldACM.getUpdateCounter());
-									newACM = oldACM;
-								}
-								else{
-									System.out.printf("\nNo commit history.");
+								splitCommand = command.split(" ");
+								String commitNum = splitCommand[splitCommand.length-1];
+								for(int i=0;i<commitHistory.size();i++){
+									if(commitHistory.get(i).getUpdateCounter() == Integer.parseInt(commitNum)){
+										newACM = commitHistory.get(i);
+									}
 								}
 							}
 							else{
@@ -338,7 +373,7 @@ public class ACMTest{
 								System.out.printf("Success.");
 								splitCommand = command.split(" ");
 								String tableName = splitCommand[splitCommand.length-1];
-								newACM.addObject(tableName);
+								workingACM.addObject(tableName);
 							}
 							else{
 								System.out.printf("Authentication failure.");
@@ -349,14 +384,20 @@ public class ACMTest{
 								System.out.printf("Success.");
 								splitCommand = command.split(" ");
 								String tableName = splitCommand[splitCommand.length-1];
-								newACM.removeObject(tableName);
+								workingACM.removeObject(tableName);
 							}
 							else{
 								System.out.printf("Authentication failure.");
 							}
 						}
 						else if(command.contains("ROLE")){
-							System.out.print(userRole);
+							System.out.printf("%d\n", userRole);
+						}
+						else if(command.contains("HISTORY")){
+							System.out.printf("Update Counters:");
+							for(int i=0;i<commitHistory.size();i++){
+								System.out.print(commitHistory.get(i).getUpdateCounter());
+							}
 						}
 						else if(command.contains("EXIT")){
 							dbPersist = false;
@@ -366,14 +407,15 @@ public class ACMTest{
 							System.out.printf("Commands:\nGRANT permission_type ON object_name TO subject_id - Grant permissions\n");
 							System.out.printf("REVOKE permission_type ON object_name FROM subject_id - Revoke permissions\n");
 							System.out.printf("COMMIT - Update objects list and commit work\n");
-							System.out.printf("ROLLBACK - Undo last commit\n");
+							System.out.printf("ROLLBACK update_counter - revert to specific commit\n");
 							System.out.printf("CREATE table_name - Creates an object with the specified name\n");
 							System.out.printf("DROP table_name - Deletes an object with the specified name\n");
 							System.out.printf("SELECT data FROM table_name - Selects data from the specified table\n");
 							System.out.printf("INSERT INTO table_name VALUES value1, value2 - Inserts values into table\n");
 							System.out.printf("DELETE FROM table_name WHERE condition - Deletes data fitting condition\n");
-							System.out.printf("ROLE - prints the users current role\n");
-							System.out.printf("EXIT - exits the database interface\n");
+							System.out.printf("ROLE - Prints the users current role\n");
+							System.out.printf("HISTORY - Prints out commit history\n");
+							System.out.printf("EXIT - Exits the database interface\n");
 						}
 						else{
 							System.out.printf("Success.");
