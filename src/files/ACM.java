@@ -21,6 +21,7 @@ public class ACM{
     private int rolesNum;
 	private int userRole;
 	private int index;
+	private int updateCounter;
     private ArrayList<ACMObject> subjects = new ArrayList<ACMObject>();
     private ArrayList<ACMObject> objects = new ArrayList<ACMObject>();
     private ArrayList<String> roles = new ArrayList<String>();
@@ -36,6 +37,14 @@ public class ACM{
 		ACMObject object3 = new ACMObject("TCL", 3);
 		objects.add(object1); objects.add(object2); objects.add(object3);
     }
+
+	public void updateCount(){
+		this.updateCounter++;
+	}
+
+	public int getUpdateCounter(){
+		return this.updateCounter;
+	}
 
     public ArrayList<String> getRoles(){
         return this.roles;
@@ -54,6 +63,7 @@ public class ACM{
         newSubject.setRole(role);
         subjects.add(newSubject);
         System.out.printf("\nSubject %s added\n", newSubject.getName());
+		this.updateCount();
     }
 
     public void removeSubject(int ID){
@@ -64,6 +74,7 @@ public class ACM{
 			}
 		}
         subjects.remove(index);									//Remove subject
+		this.updateCount();
     }
 
 	public ArrayList<ACMObject> getSubjects(){
@@ -84,12 +95,14 @@ public class ACM{
 
 	public void updateObjects(ArrayList<ACMObject> objects){
 		this.objects = objects;
+		this.updateCount();
 	}
 
     public void addObject(String name){
         int objectID = objects.get(objects.size()-1).getID()+1;
         ACMObject newObject = new ACMObject(name, objectID);
         this.objects.add(newObject);
+		this.updateCount();
     }
 
     public void removeObject(String name){
@@ -100,6 +113,7 @@ public class ACM{
             }
         }
 	    objects.remove(index);
+		this.updateCount();
     }
 	
 	public void printUsers(){

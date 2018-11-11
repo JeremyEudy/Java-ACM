@@ -25,6 +25,7 @@ public class ACMTest{
         System.out.printf("###################################\n");
 
         ACM newACM = new ACM();				//Initialize the ACM
+		ACM oldACM = new ACM();				//Make second ACM for rollback command
         boolean persist = true;
 
 		/*Login system framework
@@ -258,38 +259,42 @@ public class ACMTest{
 								String subjectID = splitCommand[5];
 								ACMObject object = objects.get(0);
 								ACMObject subject = subjects.get(0);
+								System.out.printf("\nInput permission: %s\nInput object name: %s\nInput subject ID: %s", permission, objectName, subjectID);
 								for(int i=0;i<objects.size();i++){
 									if(objects.get(i).getName() == objectName){
 										object = objects.get(i);
 									}
 								}
+								System.out.printf("\nSelected object: %s", object.getName());
 								for(int i=0;i<subjects.size();i++){
 									if(subjects.get(i).getID() == Integer.parseInt(subjectID)){
 										subject = subjects.get(i);
 									}
 								}
+								System.out.printf("\nSelected subject: %s", subject.getName());
+								System.out.printf("\nSelected permission: %s", permission);
 								if(object == null){
-									System.out.printf("Could not find object.");
+									System.out.printf("\nCould not find object.");
 								}
 								if(subject == null){
-									System.out.printf("Could not find subject.");
+									System.out.printf("\nCould not find subject.");
 								}
 								if(permission == "EXECUTE"){
 									object.authenticate(subject.getID(), 0);
+									System.out.printf("\nSubject authenticated for %s", permission);
 								}
 								else if(permission == "CONTROL"){
 									object.authenticate(subject.getID(), 1);
+									System.out.printf("\nSubject authenticated for %s", permission);
 								}
 								else if(permission == "OWN"){
 									object.authenticate(subject.getID(), 2);
+									System.out.printf("\nSubject authenticated for %s", permission);
 								}
-								for(int i=0;i<objects.size();i++){
-									if(object.getName() == objects.get(i).getName()){
-										objects.remove(i);
-										objects.add(i, object);
-									}
+								else{
+									System.out.printf("\nAuthentication failed.");
 								}
-								newACM.updateObjects(objects);
+								objects.set(object.getID()-1, object);
 							}
 							else{
 								System.out.printf("Authentication failure.");
@@ -306,6 +311,8 @@ public class ACMTest{
 						else if(command.contains("COMMIT")){
 							if(userRole>1){				//Access restricted to Security Officers and Admins
 								System.out.printf("Success.");
+								oldACM = newACM;
+								newACM.updateObjects(objects);
 							}
 							else{
 								System.out.printf("Authentication failure.");
@@ -314,6 +321,13 @@ public class ACMTest{
 						else if(command.contains("ROLLBACK")){
 							if(userRole>1){				//Access restricted to Security Officers and Admins
 								System.out.printf("Success.");
+								if(oldACM.getUpdateCounter() > 0){
+									System.out.printf("\nGoing from updateCounter %d to %d", newACM.getUpdateCounter(), oldACM.getUpdateCounter());
+									newACM = oldACM;
+								}
+								else{
+									System.out.printf("\nNo commit history.");
+								}
 							}
 							else{
 								System.out.printf("Authentication failure.");
@@ -349,8 +363,8 @@ public class ACMTest{
 							break;
 						}
 						else if(command.contains("HELP")){
-							System.out.printf("Commands:\nGRANT permission_type ON object_name TO subject_name - Grant permissions\n");
-							System.out.printf("REVOKE permission_type ON object_name FROM subject_name - Revoke permissions\n");
+							System.out.printf("Commands:\nGRANT permission_type ON object_name TO subject_id - Grant permissions\n");
+							System.out.printf("REVOKE permission_type ON object_name FROM subject_id - Revoke permissions\n");
 							System.out.printf("COMMIT - Update objects list and commit work\n");
 							System.out.printf("ROLLBACK - Undo last commit\n");
 							System.out.printf("CREATE table_name - Creates an object with the specified name\n");
