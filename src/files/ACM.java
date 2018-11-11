@@ -14,7 +14,7 @@ package ACM;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class ACM{
+public class ACM implements Cloneable{
 
     private int subjectsNum;
     private int objectsNum;
@@ -37,6 +37,10 @@ public class ACM{
 		ACMObject object3 = new ACMObject("TCL", 3);
 		objects.add(object1); objects.add(object2); objects.add(object3);
     }
+
+	public Object clone()throws CloneNotSupportedException{
+		return super.clone();
+	}
 
 	public void updateCount(){
 		this.updateCounter++;

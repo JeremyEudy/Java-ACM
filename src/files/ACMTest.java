@@ -25,7 +25,8 @@ public class ACMTest{
         System.out.printf("###################################\n");
 
         ACM newACM = new ACM();				//Initialize the ACM
-		ACM workingACM = new ACM();
+		ACM workingACM = newACM;
+		try{workingACM = (ACM)newACM.clone();}catch(CloneNotSupportedException c){}
 		ArrayList<ACM> commitHistory = new ArrayList<ACM>();	//Make arraylist to keep track of commits
 		commitHistory.add(newACM);
         boolean persist = true;
@@ -244,7 +245,7 @@ public class ACMTest{
 					//The text is parsed based on role level to dissallow access to lower level users
 					subjects = newACM.getSubjects();
 					objects = newACM.getObjects();
-					workingACM = newACM;
+					try{workingACM = (ACM)newACM.clone();}catch(CloneNotSupportedException c){}
 					commitHistory.add(newACM);
 					System.out.printf("\nDATABASE INPUT:\n");
 					boolean dbPersist = true;
@@ -394,9 +395,9 @@ public class ACMTest{
 							System.out.printf("%d\n", userRole);
 						}
 						else if(command.contains("HISTORY")){
-							System.out.printf("Update Counters:");
+							System.out.printf("Update Counters:\n");
 							for(int i=0;i<commitHistory.size();i++){
-								System.out.print(commitHistory.get(i).getUpdateCounter());
+								System.out.printf("%d\n", commitHistory.get(i).getUpdateCounter());
 							}
 						}
 						else if(command.contains("EXIT")){
