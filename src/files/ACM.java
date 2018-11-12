@@ -91,8 +91,14 @@ public class ACM implements Cloneable{
 	}
 
     public void addObject(String name){
-        int objectID = objects.get(objects.size()-1).getID()+1;
-        ACMObject newObject = new ACMObject(name, objectID);
+		int objectID = 0;
+		if(objects.size()>0){
+	        objectID = objects.get(objects.size()-1).getID()+1;
+		}
+		else{
+			objectID = 1;
+		}
+    	ACMObject newObject = new ACMObject(name, objectID);
         this.objects.add(newObject);
 		this.updateCount();
     }

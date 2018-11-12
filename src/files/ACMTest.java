@@ -528,7 +528,7 @@ public class ACMTest{
 						}
 
 						catch(Exception e){
-							System.out.printf("Invalid input.");
+							System.out.printf("Error");
 						}
 
 					}
