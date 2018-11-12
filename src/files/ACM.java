@@ -37,9 +37,12 @@ public class ACM implements Cloneable{
 		ACMObject object3 = new ACMObject("TCL", 3);
 		objects.add(object1); objects.add(object2); objects.add(object3);
     }
-
-	public Object clone()throws CloneNotSupportedException{
-		return super.clone();
+	
+	@Override
+	public Object clone() throws CloneNotSupportedException{
+		ACM cloned = (ACM) super.clone();
+		cloned.updateObjects((ArrayList<ACMObject>)cloned.getObjects().clone());
+		return cloned;
 	}
 
 	public void updateCount(){
@@ -112,7 +115,7 @@ public class ACM implements Cloneable{
     public void removeObject(String name){
         int index = 0;
         for(int i=0;i<objects.size();i++){
-            if(objects.get(i).getName() == name){
+            if(objects.get(i).getName().contains(name)){
                 index = i;
             }
         }

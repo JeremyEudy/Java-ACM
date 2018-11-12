@@ -13,7 +13,7 @@ package ACM;
 
 import java.util.ArrayList;
 
-public class ACMObject{
+public class ACMObject implements Cloneable{
 
     private String name;
     private int ID;			//In order to keep track of subjects
@@ -22,11 +22,17 @@ public class ACMObject{
 	private ArrayList<Integer> owners = new ArrayList<Integer>();
 	private ArrayList<Integer> controllers = new ArrayList<Integer>();
 	private ArrayList<Integer> executors = new ArrayList<Integer>();
+	private ArrayList<String> data = new ArrayList<String>();
 
     public ACMObject(String name, int ID){
         this.name = name;
         this.ID = ID;
     }
+
+	@Override
+	public Object clone() throws CloneNotSupportedException{
+		return super.clone();
+	}
 
     public void setRole(int role){
         this.role = role;
@@ -106,6 +112,14 @@ public class ACMObject{
 		else if(controlChoice == 2){
 			owners.add(ID);
 		}
+	}
+
+	public void updateData(ArrayList<String> newData){
+		this.data = newData;
+	}
+
+	public ArrayList<String> getData(){
+		return data;
 	}
 
 }
