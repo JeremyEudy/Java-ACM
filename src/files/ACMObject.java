@@ -19,6 +19,7 @@ public class ACMObject implements Cloneable{
     private int ID;			//In order to keep track of subjects
     private int role;		//Subjects and objects are the same class, however subjects are the only one to use this
 	private int index;
+	private boolean objType;//True = subject, False = object
 	private ArrayList<Integer> owners = new ArrayList<Integer>();
 	private ArrayList<Integer> controllers = new ArrayList<Integer>();
 	private ArrayList<Integer> executors = new ArrayList<Integer>();
@@ -34,8 +35,17 @@ public class ACMObject implements Cloneable{
 		return super.clone();
 	}
 
-    public void setRole(int role){
+	public void setObjType(boolean type){
+		this.objType = type;
+	}
+
+	public boolean getObjType(){
+		return objType;
+	}
+
+    public void setRole(int role){		//Since this is only ever used by subjects, objType will be set here.
         this.role = role;
+		this.objType = true;
     }
 
     public int getRole(){

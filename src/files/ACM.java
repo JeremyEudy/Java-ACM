@@ -16,8 +16,6 @@ import java.util.Scanner;
 
 public class ACM implements Cloneable{
 
-    private int subjectsNum;
-    private int objectsNum;
     private int rolesNum;
 	private int userRole;
 	private int index;
@@ -31,11 +29,6 @@ public class ACM implements Cloneable{
         roles.add("USER");
 		roles.add("SECURITY");
         roles.add("ADMIN");
-		//Populate objects
-		ACMObject object1 = new ACMObject("DML", 1);
-		ACMObject object2 = new ACMObject("DCL", 2);
-		ACMObject object3 = new ACMObject("TCL", 3);
-		objects.add(object1); objects.add(object2); objects.add(object3);
     }
 	
 	@Override
@@ -88,17 +81,9 @@ public class ACM implements Cloneable{
 		return this.subjects;
 	}
 
-    public int getSubjectsNum(){
-        return this.subjectsNum;
-    }
-
 	public ArrayList<ACMObject> getObjects(){
 		return this.objects;
 	}
-
-    public int getObjectsNum(){
-        return this.objectsNum;
-    }
 
 	public void updateObjects(ArrayList<ACMObject> objects){
 		this.objects = objects;
@@ -132,25 +117,63 @@ public class ACM implements Cloneable{
 	}
 
     public void printACM(){
-		//Prints static ACM
-        System.out.printf("\n%10s %8s %9s %14s %8s %8s %8s", "", "ADMIN", "SECURITY", "USER", "DML", "DCL", "TCL");
-		System.out.printf("\n%8s %52s", "", "+------------------------------------------------------------------");
-		System.out.printf("\n%10s %8s %9s %14s %8s %8s %8s", "ADMIN |", "Control", "Owner", "Owner/Control", "Control", "Control", "Control");
-		System.out.printf("\n%10s %8s %9s %14s %8s %8s %8s", "SECURITY |", "", "Control", "Control", "", "Execute", "Execute");
-		System.out.printf("\n%10s %8s %9s %14s %8s %8s %8s", "USER |", "", "", "", "Execute", "", "\n");
-    }
-
-	public void printUAuth(){
-		//Prints dynamic user authentication table
-		for(int i=0;i<objects.size();i++){
-			System.out.printf("\n%s", objects.get(i).getName());
-			System.out.printf("\n%11s | %s", "Owners", objects.get(i).getOwners());
-			System.out.printf("\n%11s | %s", "Controllers", objects.get(i).getControllers());
-			System.out.printf("\n%11s | %s\n", "Executors", objects.get(i).getExecutors());
-		}
-		System.out.printf("Users:\n");
+		//Prints ACM
+		ArrayList<ACMObject> headerObj = new ArrayList<ACMObject>();
+		ArrayList<String> header = new ArrayList<String>();
+		int maxSize = 0;
 		for(int i=0;i<subjects.size();i++){
-			System.out.printf("%d - %s | ID: %d\n", i+1, subjects.get(i).getName(), subjects.get(i).getID());
+			headerObj.add(subjects.get(i));
+			header.add(subjects.get(i).getName());
+			if(subjects.get(i).getName().length() > maxSize){
+				maxSize = subjects.get(i).getName().length();
+			}
+		}
+		for(int i=0;i<objects.size();i++){
+			headerObj.add(objects.get(i));
+			header.add(objects.get(i).getName());
+			if(objects.get(i).getName().length() > maxSize){
+				maxSize = objects.get(i).getName().length();
+			}
+		}
+		String formatString = "\n" + String.format("%"+maxSize+"s", " ") + " | ";
+		String headerString = String.join(" | ", header);
+		headerString = formatString + headerString + " | ";
+		int titleCenter = headerString.length()/2 - 3;
+		String title = "\n" + String.format("%"+titleCenter+"s", " ") + "ACM\n";
+		System.out.printf(title);
+		System.out.printf(headerString);
+		for(int i=0;i<subjects.size();i++){
+			int columnMax = 0;
+			String rowString = "\n" + String.format("%"+maxSize+"s", subjects.get(i).getName()) + " | ";
+			for(int j=0;j<headerObj.size();j++){
+				columnMax = headerObj.get(j).getName().length();
+				if(headerObj.get(j).getObjType()){
+					if(subjects.get(i).getRole() > 1){
+						rowString = rowString + String.format("%"+columnMax+"s", "O") + " | ";
+					}
+					else if(subjects.get(i).getRole() > 0 && subjects.get(i).getRole() < 2){
+						rowString = rowString + String.format("%"+columnMax+"s", "C") + " | ";
+					}
+					else{
+						rowString = rowString + String.format("%"+columnMax+"s", " ") + " | ";
+					}
+				}
+				else{
+					if(headerObj.get(j).getOwners().contains(subjects.get(i).getID())){
+						rowString = rowString + String.format("%"+columnMax+"s", "O") + " | ";
+					}
+					else if(headerObj.get(j).getControllers().contains(subjects.get(i).getID())){
+						rowString = rowString + String.format("%"+columnMax+"s", "C") + " | ";
+					}
+					else if(headerObj.get(j).getExecutors().contains(subjects.get(i).getID())){
+						rowString = rowString + String.format("%"+columnMax+"s", "E") + " | ";
+					}
+					else{
+						rowString = rowString + String.format("%"+columnMax+"s", " ") + " | ";
+					}
+				}
+			}
+			System.out.printf(rowString);
 		}
 	}
 }
