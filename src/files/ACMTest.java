@@ -269,7 +269,7 @@ public class ACMTest{
 						command = command.toUpperCase();
 						String[] splitCommand;
 						try{
-							if(command.contains("GRANT")){
+							if(command.contains("GRANT") & command.contains("ON") & command.contains("TO")){
 								subjects = workingACM.getSubjects();
 								objects = workingACM.getObjects();
 								if(userRole>1){				//Access restricted to Security Officers and Root
@@ -316,7 +316,7 @@ public class ACMTest{
 								}
 							}
 
-							else if(command.contains("REVOKE")){
+							else if(command.contains("REVOKE") & command.contains("ON") & command.contains("FROM")){
 								subjects = workingACM.getSubjects();
 								objects = workingACM.getObjects();
 								if(userRole>1){				//Access restricted to Security Officers and Root
@@ -418,7 +418,7 @@ public class ACMTest{
 								}
 							}
 
-							else if(command.contains("SELECT")){
+							else if(command.contains("SELECT") & command.contains("FROM")){
 								subjects = workingACM.getSubjects();
 								objects = workingACM.getObjects();
 								ACMObject object = objects.get(0);
@@ -448,7 +448,7 @@ public class ACMTest{
 								}
 							}
 
-							else if(command.contains("INSERT")){
+							else if(command.contains("INSERT INTO") & command.contains("VALUES")){
 								subjects = workingACM.getSubjects();
 								objects = workingACM.getObjects();
 								ACMObject object = objects.get(0);
@@ -469,7 +469,7 @@ public class ACMTest{
 								workingACM.updateObjects(objects);
 							}
 
-							else if(command.contains("DELETE")){
+							else if(command.contains("DELETE FROM")){
 								subjects = workingACM.getSubjects();
 								objects = workingACM.getObjects();
 								ACMObject object = objects.get(0);
